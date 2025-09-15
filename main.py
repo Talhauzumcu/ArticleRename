@@ -1,11 +1,8 @@
-
-#%%
-#%%
 from pdfminer.high_level import extract_text
 import re
 import os
 import requests
-#%%
+
 def find_doi(text):
     """
     Finds a DOI in a string of text.
@@ -26,12 +23,11 @@ def sanitize_filename(name):
 
 PATH = r"C:\Users\talha\OneDrive\Masaüstü\HTO\lit"
 
-
 for root, dirs, files in os.walk(PATH):
     for file in files:
         if file.endswith(".pdf"):
             article = file
-            article_path = os.path.join(PATH, article)
+            article_path = os.path.join(root, article)
             text = extract_text(article_path)
             doi = find_doi(text)
             if not doi:
