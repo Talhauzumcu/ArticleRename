@@ -47,7 +47,7 @@ for root, dirs, files in os.walk(PATH):
             year = meta['message']['published-print']['date-parts'][0][0]
             new_name = f"{title} - {author} - {year}.pdf"
             new_name = sanitize_filename(new_name)
-            new_path = os.path.join(root, new_name)
+            new_path = os.path.join(PATH, new_name)
 
             os.rename(article_path, new_path)
             print(f"Renamed {article} to {new_name}")
