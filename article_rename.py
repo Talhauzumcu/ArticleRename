@@ -32,24 +32,26 @@ def sanitize_filename(name):
 for root, dirs, files in os.walk(PATH):
     for file in files:
         if file.endswith(".pdf"):
-            article = file
-            article_path = os.path.join(root, article)
-            text = extract_text(article_path)
-            doi = find_doi(text)
-            if not doi:
-                print(f"No DOI found in {article}")
-                continue
-                
-            url = f"https://api.crossref.org/works/{doi}"
-            meta = requests.get(url).json()
-            title = meta['message']['title'][0]
-            author = f"{meta['message']['author'][0]['given']} {meta['message']['author'][0]['family']}"
-            year = meta['message']['published-print']['date-parts'][0][0]
-            new_name = f"{title} - {author} - {year}.pdf"
-            new_name = sanitize_filename(new_name)
-            new_path = os.path.join(PATH, new_name)
+            try:
+                article = file
+                article_path = os.path.join(root, article)
+                text = extract_text(article_path)
+                doi = find_doi(text)
+                if not doi:
+                    print(f"No DOI found in {article}")
+                    continue
+                    
+                url = f"https://api.crossref.org/works/{doi}"
+                meta = requests.get(url).json()
+                title = meta['message']['title'][0]
+                author = f"{meta['message']['author'][0]['given']} {meta['message']['author'][0]['family']}"
+                year = meta['message']['published-print']['date-parts'][0][0]
+                new_name = f"{title} - {author} - {year}.pdf"
+                new_name = sanitize_filename(new_name)
+                new_path = os.path.join(root, new_name)
 
-            os.rename(article_path, new_path)
-            print(f"Renamed {article} to {new_name}")
-            
+                os.rename(article_path, new_path)
+                print(f"Renamed {article} to {new_name}")
+            except Exception as e:
+                print(f"Error processing {article}: {e}")            
 
